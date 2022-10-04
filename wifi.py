@@ -5,8 +5,12 @@ from subprocess import getoutput
 # all wifi connections are preserved.
 
 os.chdir("/etc/NetworkManager/system-connections")
-allConnections = {}
 AnyPasswordinTheFile = False
+allConnections = {}
+totalConnections = 0
+
+print("username\t \tpassword")
+print("-------------------------------------")
 
 for _file in os.listdir():
     # Reading files, which contains info regarding to connections.
@@ -22,15 +26,20 @@ for _file in os.listdir():
         if 'ssid' in line:
             currentSSID = line.split("=")[1]
             currentSSID = currentSSID.replace('\n', '')
+
         if 'psk=' in line:
             SSIDpassword = line.split("=")[1]
             SSIDpassword = SSIDpassword.replace('\n', '')
-            AnyPassword = True
+            AnyPasswordinTheFile = True
+
             if AnyPasswordinTheFile:
+                # If there is any password in the file.
+                # add  it to the dictionary.
                 allConnections[currentSSID] = SSIDpassword
 
 
-print("username\t \tpassword")
-print("-------------------------------------")
 for key, value in zip(allConnections.keys(), allConnections.values()):
     print(f"{key} \t\t{value}", end = '\n')
+    time.sleep(0.1)
+
+print(f"\nTotal {len(allConnections)} connections resolved from the computer")
